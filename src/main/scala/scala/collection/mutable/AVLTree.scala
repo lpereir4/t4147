@@ -11,6 +11,9 @@ package mutable
 
 import annotation.tailrec
 
+/**
+ *  @author Lucien Pereira
+ */
 sealed trait AVLTree[+A] {
 
   def balance: Int
@@ -20,17 +23,17 @@ sealed trait AVLTree[+A] {
 
 case class Node[A](val data: A, val left: AVLTree[A], val right: AVLTree[A]) extends AVLTree[A] {
 
-  override def balance: Int = right.depth - left.depth
+  override val balance: Int = right.depth - left.depth
 
-  override def depth: Int = math.max(left.depth, right.depth) + 1
+  override val depth: Int = math.max(left.depth, right.depth) + 1
 
 }
 
 case object Leaf extends AVLTree[Nothing] {
 
-  override def balance: Int = 0
+  override val balance: Int = 0
 
-  override def depth: Int = 0
+  override val depth: Int = 0
 
 }
 
@@ -40,7 +43,9 @@ object AVLTree {
     @tailrec
     def insertTC(value: A, tree: AVLTree[A], build: AVLTree[A] => AVLTree[A]): AVLTree[A] = tree match {
       case Leaf => build(Node(value, Leaf, Leaf))
-      case Node(a, left, right) => if (-1 == ordering.compare(value, a))
+      case Node(a, left, right) => if (0 == ordering.compare(value, a))
+        throw new IllegalArgumentException()
+      else if (-1 == ordering.compare(value, a))
         insertTC(value, left, x => build(rebalance(Node(a, x, right))))
       else
         insertTC(value, right, x => build(rebalance(Node(a, left, x))))
@@ -98,6 +103,7 @@ object AVLTree {
   }
 
   def removeMin[A](tree: Node[A]): (A, AVLTree[A]) = {
+    @tailrec
     def removeMinTC(tree: AVLTree[A], assemble: (A, AVLTree[A]) => (A, AVLTree[A])): (A, AVLTree[A]) = tree match {
       case Node(a, Leaf, Leaf) => assemble(a, Leaf)
       case Node(a, Leaf, right) => assemble(a, right)
