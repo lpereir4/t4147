@@ -30,26 +30,29 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   override def -(elem: A): TreeSet[A] = {
     try {
-      resolve.avl = AVLTree.remove(elem, resolve().avl, ordering)
+      resolve.avl = AVLTree.remove(elem, resolve.avl, ordering)
     } catch {
       case e: NoSuchElementException => ()
       case a: Any => a.printStackTrace
     }
-    resolve()
+    assert(2 > math.abs(resolve.avl.balance))
+    resolve
   }
 
   override def +(elem: A): TreeSet[A] = {
     try {
-      resolve().avl = AVLTree.insert(elem, resolve().avl, ordering)
+      resolve().avl = AVLTree.insert(elem, resolve.avl, ordering)
     } catch {
       case e: IllegalArgumentException => ()
       case a: Any => a.printStackTrace
     }
-    resolve()
+    assert(2 > math.abs(resolve.avl.balance))
+    resolve
   }
 
-  override def contains(elem: A): Boolean = AVLTree.contains(elem, resolve().avl, ordering)
+  override def contains(elem: A): Boolean = AVLTree.contains(elem, resolve.avl, ordering)
 
-  override def iterator: Iterator[A] = AVLTree.iterator(resolve().avl, isLeftAcceptable(from, ordering), isRightAcceptable(until, ordering))
+  override def iterator: Iterator[A] = AVLTree.iterator(resolve.avl, isLeftAcceptable(from, ordering), isRightAcceptable(until, ordering))
 
+  override def toString = resolve.avl.toString
 }
