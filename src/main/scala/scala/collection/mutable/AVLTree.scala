@@ -144,13 +144,13 @@ object AVLTree {
   }
 
   def leftRotation[A](tree: Node[A]): AVLTree[A] = tree.right match {
-    case r@Node(b, left, right) => Node(b, Node(tree.data, tree.left, left), right)
-    case Leaf => sys.error("Should not append.")
+    case Node(b, left, right) => Node(b, Node(tree.data, tree.left, left), right)
+    case _ => sys.error("Should not append.")
   }
 
   def rightRotation[A](tree: Node[A]): AVLTree[A] = tree.left match {
-    case l@Node(b, left, right) => Node(b, left, Node(tree.data, right, tree.right))
-    case Leaf => sys.error("Should not append.")
+    case Node(b, left, right) => Node(b, left, Node(tree.data, right, tree.right))
+    case _ => sys.error("Should not append.")
   }
 
   def doubleLeftRotation[A](tree: Node[A]): AVLTree[A] = tree.right match {
