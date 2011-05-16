@@ -1,26 +1,45 @@
 package scala.collection
 
 import mutable.TreeSet
-import mutable.{AVLTree, Node, Leaf}
+import mutable.{ AVLTree, Node, Leaf }
 
 object Main {
-
   def main(args: Array[String]) {
-    implicit val o = Ordering[Int]
+    for (j <- 1 to args(0).toInt) {
+      mutableTreeSet(j * 10000)
+      immutableTreeSet(j * 10000)
+    }
+  }
 
+  def immutableTreeSet(i: Int) {
+    implicit val o = Ordering[Int]
+    val list = (1 to i)
+
+    var d = System.nanoTime() / 1000000
+    var b = immutable.TreeSet()
+    for (i <- list) {
+      b = b + i
+    }
+    for (i <- list) {
+      b = b - i
+    }
+    var a = (System.nanoTime() / 1000000) - d
+    println("@ " + i + " = " + a)
+  }
+
+  def mutableTreeSet(i: Int) {
+    implicit val o = Ordering[Int]
+    val list = (1 to i)
+
+    var d = System.nanoTime() / 1000000
     val b = new TreeSet()
-    val view = b.rangeImpl(Some(3), Some(7))
-    for(i <- (1 to args(0).toInt).reverse) {
+    for (i <- list) {
       b + i
     }
-    println(b)
-    println(view)
-    for(a <- 1 to args(0).toInt) {
-      if(0 == a % args(1).toInt)
-	b - a
+    for (i <- list) {
+      b - i
     }
-    println("===")
-    println(b)
-    println(view)
+    var a = (System.nanoTime() / 1000000) - d
+    println("> " + i + " = " + a)
   }
 }
