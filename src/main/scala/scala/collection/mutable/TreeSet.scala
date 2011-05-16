@@ -39,8 +39,11 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
   }
 
   override def +(elem: A): TreeSet[A] = {
-    if (!AVLTree.contains(elem, avl, ordering)) {
+    try {
       resolve().avl = AVLTree.insert(elem, resolve().avl, ordering)
+    } catch {
+      case e: IllegalArgumentException => ()
+      case a: Any => a.printStackTrace
     }
     resolve()
   }
@@ -50,4 +53,3 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
   override def iterator: Iterator[A] = AVLTree.iterator(resolve().avl, isLeftAcceptable(from, ordering), isRightAcceptable(until, ordering))
 
 }
-
