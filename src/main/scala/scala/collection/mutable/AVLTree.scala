@@ -33,7 +33,7 @@ case object Leaf extends AVLTree[Nothing] {
 
   override val balance: Int = 0
 
-  override val depth: Int = 0
+  override val depth: Int = -1
 
 }
 
@@ -144,18 +144,12 @@ object AVLTree {
   }
 
   def leftRotation[A](tree: Node[A]): AVLTree[A] = tree.right match {
-    case r@Node(b, left, right) => (1 == r.balance || 0 == r.balance) match {
-      case true => Node(b, Node(tree.data, tree.left, left), right)
-      case false => sys.error("Should not append.")
-    }
+    case r@Node(b, left, right) => Node(b, Node(tree.data, tree.left, left), right)
     case Leaf => sys.error("Should not append.")
   }
 
   def rightRotation[A](tree: Node[A]): AVLTree[A] = tree.left match {
-    case l@Node(b, left, right) => (-1 == l.balance || 0 == l.balance) match {
-      case true => Node(b, left, Node(tree.data, right, tree.right))
-      case false => sys.error("Should not append.")
-    }
+    case l@Node(b, left, right) => Node(b, left, Node(tree.data, right, tree.right))
     case Leaf => sys.error("Should not append.")
   }
 
