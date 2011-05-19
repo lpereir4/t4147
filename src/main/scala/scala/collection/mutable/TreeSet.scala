@@ -11,10 +11,20 @@ package mutable
 
 import generic._
 
+/** $factoryInfo
+ *  @define Coll immutable.TreeSet
+ *  @define coll immutable tree set
+ */
+object TreeSet extends MutableSortedSetFactory[TreeSet] {
+  /** The empty set of this type
+   */
+  def empty[A](implicit ordering: Ordering[A]) = new TreeSet[A]()(ordering)
+}
+
 /**
  *  @author Lucien Pereira
  */
-class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)(implicit val ordering: Ordering[A]) extends SortedSet[A] {
+class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)(implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, TreeSet[A]] {
 
   private var avl: AVLTree[A] = Leaf
 
@@ -25,6 +35,8 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   private def isRightAcceptable(until: Option[A], ordering: Ordering[A])(a: A): Boolean =
     until.map(x => ordering.lt(a, x)).getOrElse(true)
+
+  override def empty: TreeSet[A] = TreeSet.empty
 
   override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] = new TreeSet(Some(this), from, until)
 
