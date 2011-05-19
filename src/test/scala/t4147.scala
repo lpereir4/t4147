@@ -9,7 +9,9 @@ import collection.mutable.TreeSet
 
 object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
 
-  property("Insertion in TreeSet works properly.") = forAll(Gen.listOf(Gen.chooseNum(0, 1000))) {
+  val generator = Gen.listOfN(1000, Gen.chooseNum(0, 1000))
+
+  property("Insertion in TreeSet works properly.") = forAll(generator) {
     (s: List[Int]) => {
       implicit val o = Ordering[Int]
       val t = new TreeSet[Int]()
@@ -20,7 +22,7 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
     }
   }
 
-  property("Removal from TreeSet works properly.") = forAll(Gen.listOf(Gen.chooseNum(0, 1000))) {
+  property("Removal from TreeSet works properly.") = forAll(generator) {
     (s: List[Int]) => {
       implicit val o = Ordering[Int]
       val t = new TreeSet[Int]()
@@ -34,7 +36,7 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
     }
   }
 
-  property("A set doesn't hold duplicates values.") = forAll(Gen.listOf(Gen.chooseNum(0, 1000))) {
+  property("A set doesn't hold duplicates values.") = forAll(generator) {
     (s: List[Int]) => {
       implicit val o = Ordering[Int]
       val t = new TreeSet[Int]()
@@ -45,7 +47,7 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
     }
   }
 
-  property("Elements are sorted.") = forAll(Gen.listOf(Gen.chooseNum(0, 1000))) {
+  property("Elements are sorted.") = forAll(generator) {
     (s: List[Int]) => {
       implicit val o = Ordering[Int]
       val t = new TreeSet[Int]()
