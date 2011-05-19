@@ -36,7 +36,7 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
       case a: Any => a.printStackTrace
     }
     assert(2 > math.abs(resolve.avl.balance))
-    resolve
+    this
   }
 
   override def +(elem: A): TreeSet[A] = {
@@ -47,7 +47,7 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
       case a: Any => a.printStackTrace
     }
     assert(2 > math.abs(resolve.avl.balance))
-    resolve
+    this
   }
 
   override def contains(elem: A): Boolean = AVLTree.contains(elem, resolve.avl, ordering)
