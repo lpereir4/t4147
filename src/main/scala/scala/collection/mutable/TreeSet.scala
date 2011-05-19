@@ -36,6 +36,8 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
   private def isRightAcceptable(until: Option[A], ordering: Ordering[A])(a: A): Boolean =
     until.map(x => ordering.lt(a, x)).getOrElse(true)
 
+  override def stringPrefix = "TreeSet"
+
   override def empty: TreeSet[A] = TreeSet.empty
 
   override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] = new TreeSet(Some(this), from, until)
@@ -66,5 +68,4 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   override def iterator: Iterator[A] = AVLTree.iterator(resolve.avl, isLeftAcceptable(from, ordering), isRightAcceptable(until, ordering))
 
-  override def toString = resolve.avl.toString
 }
