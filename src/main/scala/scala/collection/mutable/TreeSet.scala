@@ -28,6 +28,8 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   private var avl: AVLTree[A] = Leaf
 
+  private var cardinality: Int = 0
+
   def resolve(): TreeSet[A] = base.getOrElse(this)
 
   private def isLeftAcceptable(from: Option[A], ordering: Ordering[A])(a: A): Boolean =
@@ -35,6 +37,11 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   private def isRightAcceptable(until: Option[A], ordering: Ordering[A])(a: A): Boolean =
     until.map(x => ordering.lt(a, x)).getOrElse(true)
+
+  // cardinality store the set size, unfortunately a
+  // set view (given by rangeImpl)
+  // cannot take advantage of this optimisation
+  override def size: Int = base.map(_ => super.size).getOrElse(cardinality)
 
   override def stringPrefix = "TreeSet"
 
@@ -45,6 +52,7 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
   override def -(elem: A): TreeSet[A] = {
     try {
       resolve.avl = AVLTree.remove(elem, resolve.avl, ordering)
+      resolve.cardinality = resolve.cardinality - 1
     } catch {
       case e: NoSuchElementException => ()
       case a: Any => a.printStackTrace
@@ -55,7 +63,8 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   override def +(elem: A): TreeSet[A] = {
     try {
-      resolve().avl = AVLTree.insert(elem, resolve.avl, ordering)
+      resolve.avl = AVLTree.insert(elem, resolve.avl, ordering)
+      resolve.cardinality = resolve.cardinality + 1
     } catch {
       case e: IllegalArgumentException => ()
       case a: Any => a.printStackTrace
