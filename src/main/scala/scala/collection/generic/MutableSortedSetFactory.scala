@@ -9,16 +9,13 @@
 package scala.collection
 package generic
 
-/** A template for companion objects of `SortedSet` and subclasses thereof.
+import scala.collection.mutable.{Builder, SetBuilder}
+
+/**
  *  
- *  @since 2.8
- *  @define Coll immutable.SortedSet
- *  @define coll immutable sorted 
- *  @define factoryInfo
- *    This object provides a set of operations needed to create sorted sets of type `$Coll`.
- *    @author Martin Odersky
- *    @version 2.8
- *  @define sortedSetCanBuildFromInfo
- *    The standard `CanBuildFrom` instance for sorted sets
+ *  @define Coll mutable.SortedSet
+ *  @define coll mutable sorted 
+ *  @author Lucien Pereira
+ * 
  */
 abstract class MutableSortedSetFactory[CC[A] <: mutable.SortedSet[A] with SortedSetLike[A, CC[A]]] extends SortedSetFactory[CC]

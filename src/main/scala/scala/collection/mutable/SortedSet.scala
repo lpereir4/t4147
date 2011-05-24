@@ -11,24 +11,21 @@ package mutable
 
 import generic._
 
-/** A subtrait of `collection.SortedSet` which represents sorted sets
- *  which can be mutated.
- *
- *  @author Sean McDirmid
- *  @author Martin Odersky
- *  @version 2.8
- *  @since   2.4
+/**
+ * 
+ *  @author Lucien Pereira
  *  @define Coll mutable.SortedSet
  *  @define coll mutable sorted set
+ * 
  */
-trait SortedSet[A] extends scala.collection.SortedSet[A] with SortedSetLike[A, SortedSet[A]] with Set[A] with SetLike[A, SortedSet[A]] {
+trait SortedSet[A] extends collection.SortedSet[A] with collection.SortedSetLike[A,SortedSet[A]] {
   /** Needs to be overridden in subclasses. */
   override def empty: SortedSet[A] = SortedSet.empty[A]
 }
 
 /** $factoryInfo
- *  @define Coll immutable.SortedSet
- *  @define coll immutable sorted set
+ *  @define Coll mutable.SortedSet
+ *  @define coll mutable sorted set
  */
 object SortedSet extends MutableSortedSetFactory[SortedSet] {
   /** $sortedSetCanBuildFromInfo */

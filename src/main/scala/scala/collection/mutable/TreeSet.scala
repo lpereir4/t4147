@@ -15,7 +15,7 @@ import generic._
  *  @define Coll immutable.TreeSet
  *  @define coll immutable tree set
  */
-object TreeSet extends MutableSortedSetFactory[SortedSet] {
+object TreeSet extends MutableSortedSetFactory[TreeSet] {
   /** The empty set of this type
    */
   def empty[A](implicit ordering: Ordering[A]) = new TreeSet[A]()(ordering)
@@ -24,7 +24,10 @@ object TreeSet extends MutableSortedSetFactory[SortedSet] {
 /**
  *  @author Lucien Pereira
  */
-class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)(implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, SortedSet[A]] {
+class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)(implicit val ordering: Ordering[A]) extends SortedSet[A]
+  with SetLike[A, TreeSet[A]]
+  with SortedSetLike[A, TreeSet[A]]
+  with Set[A] {
 
   private var avl: AVLTree[A] = Leaf
 
@@ -72,6 +75,40 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
     assert(2 > math.abs(resolve.avl.balance))
     this
   }
+
+  override def +(elem: A): TreeSet[A] = {
+    val t = TreeSet[A]()
+    try {
+      t.avl = AVLTree.insert(elem, resolve.avl, ordering)
+      t.cardinality = resolve.cardinality + 1
+    } catch {
+      case e: IllegalArgumentException => {
+        t.avl = resolve.avl
+        t.cardinality = resolve.cardinality
+      }
+      case a: Any => a.printStackTrace
+    }
+    assert(2 > math.abs(resolve.avl.balance))
+    t
+  }
+
+  override def -(elem: A): TreeSet[A] = {
+    val t = TreeSet[A]()
+    try {
+      t.avl = AVLTree.remove(elem, resolve.avl, ordering)
+      t.cardinality = resolve.cardinality - 1
+    } catch {
+      case e: NoSuchElementException => {
+        t.avl = resolve.avl
+        t.cardinality = resolve.cardinality
+      }
+      case a: Any => a.printStackTrace
+    }
+    assert(2 > math.abs(resolve.avl.balance))
+    t
+  }
+
+  override def clone: TreeSet[A] = empty ++= this
 
   override def contains(elem: A): Boolean = AVLTree.contains(elem, resolve.avl, ordering)
 

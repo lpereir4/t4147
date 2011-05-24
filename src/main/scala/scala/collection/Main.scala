@@ -27,10 +27,10 @@ object Main {
       val list = (1 to nb)
       var d = s
       for (i <- list) {
-        d = d + i
+        d += i
       }
       for (i <- list) {
-        d = d - i
+        d -= i
       }
     }
   }
@@ -49,10 +49,10 @@ object Main {
   }
 
   def size(n: Int): Seq[(Int, Long, Long)] = {
-    val s = mutableSetBuilder()
+    var s = mutableSetBuilder()
     val view = s.rangeImpl(None, None)
     (1 to n).map(i => {
-      s + i
+      s += i
       (i, measure(sizeJob)(0)(s), measure(sizeJob)(0)(view))
     })
   }
@@ -64,7 +64,7 @@ object Main {
   }
 
   def main(args: Array[String]) {
-    // show(insertionRemoval(args(0).toInt))
+    show(insertionRemoval(args(0).toInt))
     // show(size(args(0).toInt))
   }
 }

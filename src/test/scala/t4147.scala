@@ -13,16 +13,16 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
 
   property("Insertion in TreeSet works properly.") = forAll(generator) { (s: List[Int]) =>
     {
-      val t = TreeSet(s: _*)
+      val t = TreeSet[Int](s: _*)
       t == s.toSet
     }
   }
 
   property("Removal from TreeSet works properly.") = forAll(generator) { (s: List[Int]) =>
     {
-      val t = TreeSet(s: _*)
+      val t = TreeSet[Int](s: _*)
       for (a <- s) {
-        t - a
+        t -= a
       }
       t.size == 0 && t == Set()
     }
@@ -30,14 +30,14 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
 
   property("A set doesn't hold duplicates values.") = forAll(generator) { (s: List[Int]) =>
     {
-      val t = TreeSet(s: _*)
+      val t = TreeSet[Int](s: _*)
       t.size == s.distinct.size
     }
   }
 
   property("Elements are sorted.") = forAll(generator) { (s: List[Int]) =>
     {
-      val t = TreeSet(s: _*)
+      val t = TreeSet[Int](s: _*)
       t.toList == s.distinct.sorted
     }
   }
