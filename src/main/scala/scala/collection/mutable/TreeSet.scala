@@ -15,7 +15,7 @@ import generic._
  *  @define Coll immutable.TreeSet
  *  @define coll immutable tree set
  */
-object TreeSet extends MutableSortedSetFactory[TreeSet] {
+object TreeSet extends MutableSortedSetFactory[SortedSet] {
   /** The empty set of this type
    */
   def empty[A](implicit ordering: Ordering[A]) = new TreeSet[A]()(ordering)
@@ -24,7 +24,7 @@ object TreeSet extends MutableSortedSetFactory[TreeSet] {
 /**
  *  @author Lucien Pereira
  */
-class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)(implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, TreeSet[A]] {
+class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)(implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, SortedSet[A]] {
 
   private var avl: AVLTree[A] = Leaf
 
@@ -49,7 +49,7 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] = new TreeSet(Some(this), from, until)
 
-  override def -(elem: A): TreeSet[A] = {
+  override def -=(elem: A): this.type = {
     try {
       resolve.avl = AVLTree.remove(elem, resolve.avl, ordering)
       resolve.cardinality = resolve.cardinality - 1
@@ -61,7 +61,7 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
     this
   }
 
-  override def +(elem: A): TreeSet[A] = {
+  override def +=(elem: A): this.type = {
     try {
       resolve.avl = AVLTree.insert(elem, resolve.avl, ordering)
       resolve.cardinality = resolve.cardinality + 1
