@@ -12,8 +12,8 @@ package mutable
 import generic._
 
 /** $factoryInfo
- *  @define Coll immutable.TreeSet
- *  @define coll immutable tree set
+ *  @define Coll mutable.TreeSet
+ *  @define coll mutable tree set
  */
 object TreeSet extends MutableSortedSetFactory[TreeSet] {
   /** The empty set of this type
@@ -24,7 +24,9 @@ object TreeSet extends MutableSortedSetFactory[TreeSet] {
 /**
  *  @author Lucien Pereira
  */
-class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)(implicit val ordering: Ordering[A]) extends SortedSet[A]
+class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)
+		(implicit val ordering: Ordering[A])
+  extends SortedSet[A]
   with SetLike[A, TreeSet[A]]
   with SortedSetLike[A, TreeSet[A]]
   with Set[A] {
@@ -41,9 +43,11 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
   private def isRightAcceptable(until: Option[A], ordering: Ordering[A])(a: A): Boolean =
     until.map(x => ordering.lt(a, x)).getOrElse(true)
 
-  // cardinality store the set size, unfortunately a
-  // set view (given by rangeImpl)
-  // cannot take advantage of this optimisation
+  /**
+   * cardinality store the set size, unfortunately a
+   * set view (given by rangeImpl)
+   * cannot take advantage of this optimisation
+   */
   override def size: Int = base.map(_ => super.size).getOrElse(cardinality)
 
   override def stringPrefix = "TreeSet"
@@ -76,39 +80,17 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
     this
   }
 
-  override def +(elem: A): TreeSet[A] = {
-    val t = TreeSet[A]()
-    try {
-      t.avl = AVLTree.insert(elem, resolve.avl, ordering)
-      t.cardinality = resolve.cardinality + 1
-    } catch {
-      case e: IllegalArgumentException => {
-        t.avl = resolve.avl
-        t.cardinality = resolve.cardinality
-      }
-      case a: Any => a.printStackTrace
-    }
-    assert(2 > math.abs(resolve.avl.balance))
-    t
+  /**
+   * Thanks to the nature immutable of the
+   * underlying AVL Tree, we can share it whith
+   * the clone. So clone complexity in time is O(1).
+   */
+  override def clone: TreeSet[A] = {
+    val clone = empty
+    clone.avl = resolve.avl
+    clone.cardinality = resolve.cardinality
+    clone
   }
-
-  override def -(elem: A): TreeSet[A] = {
-    val t = TreeSet[A]()
-    try {
-      t.avl = AVLTree.remove(elem, resolve.avl, ordering)
-      t.cardinality = resolve.cardinality - 1
-    } catch {
-      case e: NoSuchElementException => {
-        t.avl = resolve.avl
-        t.cardinality = resolve.cardinality
-      }
-      case a: Any => a.printStackTrace
-    }
-    assert(2 > math.abs(resolve.avl.balance))
-    t
-  }
-
-  override def clone: TreeSet[A] = empty ++= this
 
   override def contains(elem: A): Boolean = AVLTree.contains(elem, resolve.avl, ordering)
 
