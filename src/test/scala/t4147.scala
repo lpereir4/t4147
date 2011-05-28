@@ -46,8 +46,8 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
     forAll(generator) { (s: List[Int]) =>
       {
         val t = TreeSet[Int](s: _*)
-        val t2 = t.map(_*2)
-	t2.isInstanceOf[collection.mutable.TreeSet[Int]]
+        val t2 = t.map(_ * 2)
+        t2.isInstanceOf[collection.mutable.TreeSet[Int]]
       }
     }
 }
