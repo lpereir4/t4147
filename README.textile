@@ -5,11 +5,28 @@ As my interest for this language was growing, I realised that open source contri
 In Scala, you can choose to use immutable as well as mutable collections. Since Scala promotes a functionnal programming style, implementation of the immutable variation has been favored. This resulted in issue "#4147":https://issues.scala-lang.org/browse/SI-4147 to be opened, implementation of a mutable TreeSet would be usefull. I recently finished my studies and my brain is still full of algorithms and data structures, so I felt confortable in dealing with this task.
 
 h2. Primary choices
-* Since we are about to implement a TreeSet, we should take advantage of this data structure by make this set sorted.
+* Since we are about to implement a TreeSet, It obvious to take advantage of this data structure by making the set sorted.
 * I'm really interested in exploring assets and liabilities of immutable data structure, so my TreeSet will be backed by an immutable tree. Mutability will be obtained by replacing reference to it.
-* AVL Tree is the king of balanced tree I'm the most familiar with, it will do the job. 
+* AVL Tree is the kind of balanced tree I'm the most familiar with, it will do the job. 
 
 h2. Implementation
+
+h3. Pluging into the existing Scala collection hierarchy
+TreeSet collection nature is twofold :
+* First, it's a Set
+* Second, it's a SortedSet
+@
+class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)
+                 (implicit val ordering: Ordering[A])
+  extends SortedSet[A]
+  with SetLike[A, TreeSet[A]]
+  with SortedSetLike[A, TreeSet[A]]
+  with Set[A] {
+
+  ...
+
+  }
+@
 
 h3. AVL Tree
 
