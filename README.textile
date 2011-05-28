@@ -16,16 +16,16 @@ TreeSet collection nature is twofold :
 * First, it's a Set
 * Second, it's a SortedSet
 
-@class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)
-                 (implicit val ordering: Ordering[A])
-  extends SortedSet[A]
-  with SetLike[A, TreeSet[A]]
-  with SortedSetLike[A, TreeSet[A]]
-  with Set[A] {
-
-  ...
-
-  }@
+@class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)@
+@                (implicit val ordering: Ordering[A])@
+@  extends SortedSet[A]@
+@  with SetLike[A, TreeSet[A]]@
+@  with SortedSetLike[A, TreeSet[A]]@
+@  with Set[A] {
+@@
+@  ...@
+@@
+@  }@
 
 h3. AVL Tree
 
