@@ -1,1 +1,8 @@
-h1. Textile experimentations
+h1. t4147 : Yet another Set
+
+As my interest for this language was growing, I realised that open source contribution would ease my comprehension of the language as well as constituing a valuable experience. I started to find an open source project I could contribute to and discovered that some issues of the Scala project itself where assigned to the community, let's contribute ...
+
+In Scala, you can choose to use immutable as well as mutable collections. Since Scala promotes a functionnal programming style, implementation of the immutable variation has been favored. This resulted in issue "#4147":https://issues.scala-lang.org/browse/SI-4147 to be opened, implementation of a mutable TreeSet would be usefull. I recently finished my studies and my brain is still full of algorithms, I felt confortable in dealing with this task.
+
+h2. Primary choices
+
