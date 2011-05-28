@@ -41,4 +41,13 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
       t.toList == s.distinct.sorted
     }
   }
+
+  property("implicit can build from resolution succeeds as well as the \"same-result-type\" principle.") =
+    forAll(generator) { (s: List[Int]) =>
+      {
+        val t = TreeSet[Int](s: _*)
+        val t2 = t.map(_*2)
+	t2.isInstanceOf[collection.mutable.TreeSet[Int]]
+      }
+    }
 }
