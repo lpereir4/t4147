@@ -18,4 +18,4 @@ import scala.collection.mutable.{Builder, SetBuilder}
  *  @author Lucien Pereira
  * 
  */
-abstract class MutableSortedSetFactory[CC[A] <: mutable.SortedSet[A] with SortedSetLike[A, CC[A]]] extends SortedSetFactory[CC]
+abstract class MutableSortedSetFactory[CC[A] <: mutable.SortedSet[A] with SortedSetLike[A, CC[A]] with mutable.Set[A] with mutable.SetLike[A, CC[A]]] extends SortedSetFactory[CC]

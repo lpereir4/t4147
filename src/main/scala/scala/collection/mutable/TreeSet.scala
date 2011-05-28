@@ -82,7 +82,7 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   /**
    * Thanks to the nature immutable of the
-   * underlying AVL Tree, we can share it whith
+   * underlying AVL Tree, we can share it with
    * the clone. So clone complexity in time is O(1).
    */
   override def clone: TreeSet[A] = {

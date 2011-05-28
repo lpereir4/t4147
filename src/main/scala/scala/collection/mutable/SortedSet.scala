@@ -18,7 +18,7 @@ import generic._
  *  @define coll mutable sorted set
  * 
  */
-trait SortedSet[A] extends collection.SortedSet[A] with collection.SortedSetLike[A,SortedSet[A]] {
+trait SortedSet[A] extends collection.SortedSet[A] with collection.SortedSetLike[A,SortedSet[A]] with Set[A] with SetLike[A, SortedSet[A]] {
   /** Needs to be overridden in subclasses. */
   override def empty: SortedSet[A] = SortedSet.empty[A]
 }
