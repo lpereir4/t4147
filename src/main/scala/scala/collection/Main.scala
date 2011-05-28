@@ -89,8 +89,8 @@ object Main {
   }*/
 
   def show(tab: Seq[(Int, Long, Long, Long)]) {
-    println("size;immutable;mutable;java.mutable")
-    tab.foreach(line => println("%s;%s;%s;%s" format(line._1, line._2, line._3, line._4)))
+    println("#Cardinality scala.collection.immutable.TreeSet \"mutable TreeSet (based on an immutable AVL)\" java.util.TreeSet")
+    tab.foreach(line => println("%s %s %s %s" format(line._1, line._2, line._3, line._4)))
   }
 
   def main(args: Array[String]) {
