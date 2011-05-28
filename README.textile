@@ -12,6 +12,7 @@ h2. Primary choices
 h2. Implementation
 
 h3. Pluging into the existing Scala collection hierarchy
+
 TreeSet collection nature is twofold :
 * First, it's a Set
 * Second, it's a SortedSet
