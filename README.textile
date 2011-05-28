@@ -15,8 +15,8 @@ h3. Pluging into the existing Scala collection hierarchy
 TreeSet collection nature is twofold :
 * First, it's a Set
 * Second, it's a SortedSet
-@
-class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)
+
+@class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)
                  (implicit val ordering: Ordering[A])
   extends SortedSet[A]
   with SetLike[A, TreeSet[A]]
@@ -25,8 +25,7 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
 
   ...
 
-  }
-@
+  }@
 
 h3. AVL Tree
 
