@@ -2,13 +2,16 @@ h1. t4147 : Yet another Set
 
 As my interest for this language was growing, I realised that open source contribution would ease my comprehension of the language as well as constituing a valuable experience. I started to find an open source project I could contribute to and discovered that some issues of the Scala project itself where assigned to the community, let's go ...
 
-In Scala, you can choose to use immutable as well as mutable collections. Since Scala promotes a functionnal programming style, implementation of the immutable variation has been favored. This resulted in issue "#4147":https://issues.scala-lang.org/browse/SI-4147 to be opened, implementation of a mutable TreeSet would be usefull. I recently finished my studies and my brain is still full of algorithms, I felt confortable in dealing with this task.
+In Scala, you can choose to use immutable as well as mutable collections. Since Scala promotes a functionnal programming style, implementation of the immutable variation has been favored. This resulted in issue "#4147":https://issues.scala-lang.org/browse/SI-4147 to be opened, implementation of a mutable TreeSet would be usefull. I recently finished my studies and my brain is still full of algorithms and data structures, so I felt confortable in dealing with this task.
 
 h2. Primary choices
+* Since we are about to implement a TreeSet, we should take advantage of this data structure by make this set sorted.
+* I'm really interested in exploring assets and liabilities of immutable data structure, so my TreeSet will be backed by an immutable tree. Mutability will be obtained by replacing reference to it.
+* AVL Tree is the king of balanced tree I'm the most familiar with, it will do the job. 
 
 h2. Implementation
 
-h3. Underlying data structure
+h3. AVL Tree
 
 h3. Iterator
 
