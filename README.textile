@@ -39,3 +39,9 @@ h2. Unit tests
 h2. Performance quick benchmark
 
 !https://github.com/lpereir4/t4147/raw/master/src/test/resources/output.png!
+
+h2. Usefull documentation
+
+* "http://www.scala-lang.org/docu/files/collections-api/collections.html":http://www.scala-lang.org/docu/files/collections-api/collections.html
+* "http://www.scala-lang.org/docu/files/collections-api/collections-impl.html":http://www.scala-lang.org/docu/files/collections-api/collections-impl.html
+* "http://www.artima.com/scalazine/articles/scala_collections_architecture.html":http://www.artima.com/scalazine/articles/scala_collections_architecture.html
