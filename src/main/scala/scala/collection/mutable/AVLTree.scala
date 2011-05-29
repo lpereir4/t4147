@@ -12,6 +12,8 @@ package mutable
 import annotation.tailrec
 
 /**
+ *  An immutable AVL Tree implementation used by mutable.TreeSet
+ * 
  *  @author Lucien Pereira
  */
 sealed trait AVLTree[+A] {
@@ -21,7 +23,7 @@ sealed trait AVLTree[+A] {
   def depth: Int
 }
 
-case class Node[A](val data: A, val left: AVLTree[A], val right: AVLTree[A]) extends AVLTree[A] {
+private[mutable] case class Node[A](val data: A, val left: AVLTree[A], val right: AVLTree[A]) extends AVLTree[A] {
 
   override val balance: Int = right.depth - left.depth
 
@@ -29,7 +31,7 @@ case class Node[A](val data: A, val left: AVLTree[A], val right: AVLTree[A]) ext
 
 }
 
-case object Leaf extends AVLTree[Nothing] {
+private[mutable] case object Leaf extends AVLTree[Nothing] {
 
   override val balance: Int = 0
 

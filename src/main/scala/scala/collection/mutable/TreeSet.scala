@@ -11,9 +11,12 @@ package mutable
 
 import generic._
 
-/** $factoryInfo
+/** 
  *  @define Coll mutable.TreeSet
  *  @define coll mutable tree set
+ *  @factoryInfo
+ *    Companion object of TreeSet providing factory related utilities.
+ *    @author Lucien Pereira
  */
 object TreeSet extends MutableSortedSetFactory[TreeSet] {
   /** The empty set of this type
@@ -22,13 +25,15 @@ object TreeSet extends MutableSortedSetFactory[TreeSet] {
 }
 
 /**
- *  @author Lucien Pereira
+ * A mutable SortedSet using an immutable AVL Tree as underlying data structure.
+ * 
+ * @author Lucien Pereira
  */
 class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with SetLike[A, TreeSet[A]]
   with SortedSetLike[A, TreeSet[A]] with Set[A] {
 
   // View secondary constructor
-  def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(implicit ordering: Ordering[A]) {
+  private def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(implicit ordering: Ordering[A]) {
     this();
     this.base = base
     this.from = from
@@ -54,7 +59,7 @@ class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with S
     until.map(x => ordering.lt(a, x)).getOrElse(true)
 
   /**
-   * cardinality store the set size, unfortunately a
+   * Cardinality store the set size, unfortunately a
    * set view (given by rangeImpl)
    * cannot take advantage of this optimisation
    */
