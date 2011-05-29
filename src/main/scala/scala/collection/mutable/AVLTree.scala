@@ -94,6 +94,7 @@ object AVLTree {
   }
 
   def removeMax[A](tree: Node[A]): (A, AVLTree[A]) = {
+    @tailrec
     def removeMaxTC(tree: AVLTree[A], assemble: (A, AVLTree[A]) => (A, AVLTree[A])): (A, AVLTree[A]) = tree match {
       case Node(a, Leaf, Leaf) => assemble(a, Leaf)
       case Node(a, left, Leaf) => assemble(a, left)
