@@ -18,7 +18,7 @@ import generic._
 object TreeSet extends MutableSortedSetFactory[TreeSet] {
   /** The empty set of this type
    */
-  def empty[A](implicit ordering: Ordering[A]) = new TreeSet[A]()(ordering)
+  def empty[A](implicit ordering: Ordering[A]) = new TreeSet[A]()
 }
 
 /**
