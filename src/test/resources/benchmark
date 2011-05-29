@@ -1,18 +1,3 @@
-[0m[[0minfo[0m] [0mBuilding project t4147 0.0.1 against Scala 2.9.0-1[0m
-[0m[[0minfo[0m] [0m   using T4147Ticket with sbt 0.7.7 and Scala 2.7.7[0m
-[0m[[0minfo[0m] [34m[0m
-[0m[[0minfo[0m] [34m== copy-resources ==[0m
-[0m[[0minfo[0m] [34m== copy-resources ==[0m
-[0m[[0minfo[0m] [34m[0m
-[0m[[0minfo[0m] [34m== compile ==[0m
-[0m[[0minfo[0m] [0m  Source analysis: 0 new/modified, 0 indirectly invalidated, 0 removed.[0m
-[0m[[0minfo[0m] [0mCompiling main sources...[0m
-[0m[[0minfo[0m] [0mNothing to compile.[0m
-[0m[[0minfo[0m] [0m  Post-analysis: 52 classes.[0m
-[0m[[0minfo[0m] [34m== compile ==[0m
-[0m[[0minfo[0m] [34m[0m
-[0m[[0minfo[0m] [34m== run ==[0m
-[0m[[0minfo[0m] [0mRunning scala.collection.Main 100[0m
 #Cardinality scala.collection.immutable.TreeSet "mutable TreeSet (based on an immutable AVL)" java.util.TreeSet
 10000 330 531 119
 20000 74 49 39
@@ -114,10 +99,3 @@
 980000 3297 1626 597
 990000 3327 1679 786
 1000000 3335 1665 1103
-[0m[[0minfo[0m] [34m== run ==[0m
-[0m[[32msuccess[0m] [0mSuccessful.[0m
-[0m[[0minfo[0m] [0m[0m
-[0m[[0minfo[0m] [0mTotal time: 280 s, completed 29 mai 2011 10:46:02[0m
-[0m[[0minfo[0m] [0m[0m
-[0m[[0minfo[0m] [0mTotal session time: 281 s, completed 29 mai 2011 10:46:02[0m
-[0m[[32msuccess[0m] [0mBuild completed successfully.[0m
