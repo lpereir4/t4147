@@ -11,27 +11,32 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
 
   val generator = Gen.listOfN(1000, Gen.chooseNum(0, 1000))
 
-  property("Insertion in TreeSet works properly.") = forAll(generator) { (s: List[Int]) =>
+  val denseGenerator = Gen.listOfN(1000, Gen.chooseNum(0, 200))
+
+  property("Insertion doesn't allow duplicates values.") = forAll(generator) { (s: List[Int]) =>
     {
       val t = TreeSet[Int](s: _*)
       t == s.toSet
     }
   }
 
-  property("Removal from TreeSet works properly.") = forAll(generator) { (s: List[Int]) =>
+  property("Verification of size method validity") = forAll(generator) { (s: List[Int]) =>
     {
       val t = TreeSet[Int](s: _*)
       for (a <- s) {
         t -= a
       }
-      t.size == 0 && t == Set()
+      t.size == 0
     }
   }
 
-  property("A set doesn't hold duplicates values.") = forAll(generator) { (s: List[Int]) =>
+  property("All inserted elements are removed") = forAll(generator) { (s: List[Int]) =>
     {
       val t = TreeSet[Int](s: _*)
-      t.size == s.distinct.size
+      for (a <- s) {
+        t -= a
+      }
+      t == Set()
     }
   }
 
@@ -42,7 +47,7 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
     }
   }
 
-  property("implicit can build from resolution succeeds as well as the \"same-result-type\" principle.") =
+  property("Implicit CanBuildFrom resolution succeeds as well as the \"same-result-type\" principle.") =
     forAll(generator) { (s: List[Int]) =>
       {
         val t = TreeSet[Int](s: _*)
@@ -50,4 +55,12 @@ object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
         t2.isInstanceOf[collection.mutable.TreeSet[Int]]
       }
     }
+
+  property("A view doesn't expose off bounds elements") = forAll(denseGenerator) { (s: List[Int]) =>
+    {
+      val t = TreeSet[Int](s: _*)
+      val view = t.rangeImpl(Some(50), Some(150))
+      view.filter(_<50) == Set[Int]() && view.filter(_>=150) == Set[Int]()
+    }
+  }
 }
