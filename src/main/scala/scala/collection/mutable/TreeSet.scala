@@ -24,12 +24,22 @@ object TreeSet extends MutableSortedSetFactory[TreeSet] {
 /**
  *  @author Lucien Pereira
  */
-class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)
-		(implicit val ordering: Ordering[A])
-  extends SortedSet[A]
-  with SetLike[A, TreeSet[A]]
-  with SortedSetLike[A, TreeSet[A]]
-  with Set[A] {
+class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with SetLike[A, TreeSet[A]]
+  with SortedSetLike[A, TreeSet[A]] with Set[A] {
+
+  // View secondary constructor
+  def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(implicit ordering: Ordering[A]) {
+    this();
+    this.base = base
+    this.from = from
+    this.until = until
+  }
+
+  private var base: Option[TreeSet[A]] = None
+
+  private var from: Option[A] = None
+
+  private var until: Option[A] = None
 
   private var avl: AVLTree[A] = Leaf
 
@@ -64,7 +74,6 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
       case e: NoSuchElementException => ()
       case a: Any => a.printStackTrace
     }
-    assert(2 > math.abs(resolve.avl.balance))
     this
   }
 
@@ -76,7 +85,6 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
       case e: IllegalArgumentException => ()
       case a: Any => a.printStackTrace
     }
-    assert(2 > math.abs(resolve.avl.balance))
     this
   }
 
@@ -86,13 +94,17 @@ class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until:
    * the clone. So clone complexity in time is O(1).
    */
   override def clone: TreeSet[A] = {
-    val clone = empty
+    val clone = new TreeSet[A](base, from, until)
     clone.avl = resolve.avl
     clone.cardinality = resolve.cardinality
     clone
   }
 
-  override def contains(elem: A): Boolean = AVLTree.contains(elem, resolve.avl, ordering)
+  override def contains(elem: A): Boolean = {
+    isLeftAcceptable(from, ordering)(elem) &&
+    isRightAcceptable(until, ordering)(elem) &&
+    AVLTree.contains(elem, resolve.avl, ordering)
+  }
 
   override def iterator: Iterator[A] = AVLTree.iterator(resolve.avl, isLeftAcceptable(from, ordering), isRightAcceptable(until, ordering))
 
