@@ -41,6 +41,9 @@ private[mutable] case object Leaf extends AVLTree[Nothing] {
 
 object AVLTree {
 
+  /**
+   * Returns a new tree containing the given element.
+   */
   def insert[A](value: A, tree: AVLTree[A], ordering: Ordering[A]): AVLTree[A] = {
     @tailrec
     def insertTC(value: A, tree: AVLTree[A], build: AVLTree[A] => AVLTree[A]): AVLTree[A] = tree match {
@@ -66,6 +69,9 @@ object AVLTree {
       contains(value, right, ordering)
   }
 
+  /**
+   * Return a new tree which not contains given element.
+   */
   def remove[A](value: A, tree: AVLTree[A], ordering: Ordering[A]): AVLTree[A] = tree match {
     // Empty
     case Leaf => throw new NoSuchElementException()
@@ -93,6 +99,10 @@ object AVLTree {
       rebalance(Node(a, left, remove(value, right, ordering)))
   }
 
+  /**
+   * Return a tuple containing the biggest element of the provided tree
+   * and a new tree from which this element has been extracted.
+   */
   def removeMax[A](tree: Node[A]): (A, AVLTree[A]) = {
     @tailrec
     def removeMaxTC(tree: AVLTree[A], assemble: (A, AVLTree[A]) => (A, AVLTree[A])): (A, AVLTree[A]) = tree match {
@@ -105,6 +115,10 @@ object AVLTree {
     removeMaxTC(tree, (a, b) => (a, b))
   }
 
+  /**
+   * Return a tuple containing the smallest element of the provided tree
+   * and a new tree from which this element has been extracted
+   */
   def removeMin[A](tree: Node[A]): (A, AVLTree[A]) = {
     @tailrec
     def removeMinTC(tree: AVLTree[A], assemble: (A, AVLTree[A]) => (A, AVLTree[A])): (A, AVLTree[A]) = tree match {
@@ -117,6 +131,9 @@ object AVLTree {
     removeMinTC(tree, (a, b) => (a, b))
   }
 
+  /**
+   * Returns a bounded stream of elements in the tree
+   */
   def toStream[A](tree: AVLTree[A], isLeftAcceptable: A => Boolean, isRightAcceptable: A => Boolean): Stream[A] = tree match {
     case Leaf => Stream.empty
     case Node(a, left, right) => if (isLeftAcceptable(a)) {
@@ -131,6 +148,9 @@ object AVLTree {
     }
   }
 
+  /**
+   * Returns a bounded iterator of elements in the tree
+   */
   def iterator[A](tree: AVLTree[A], isLeftAcceptable: A => Boolean, isRightAcceptable: A => Boolean): Iterator[A] =
     toStream(tree, isLeftAcceptable, isRightAcceptable).iterator
 
