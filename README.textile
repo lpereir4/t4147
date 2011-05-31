@@ -2,35 +2,80 @@ h1. t4147 : Yet another Set
 
 As my interest for this language was growing, I realised that open source contribution would ease my comprehension of the language as well as constituing a valuable experience. I started to find an open source project I could contribute to and discovered that some issues of the Scala project itself where assigned to the community, let's go ...
 
-In Scala, you can choose to use immutable as well as mutable collections. Since Scala promotes a functionnal programming style, implementation of the immutable variation has been favored. This resulted in issue "#4147":https://issues.scala-lang.org/browse/SI-4147 to be opened, implementation of a mutable TreeSet would be usefull. I recently finished my studies and my brain is still full of algorithms and data structures, so I felt confortable in dealing with this task.
+In Scala, collections are you can choose to use immutable as well as mutable collections. Since Scala promotes a functionnal programming style, implementation of the immutable variation has been favored. This resulted in issue "#4147":https://issues.scala-lang.org/browse/SI-4147 to be opened, implementation of a mutable TreeSet would be usefull. I recently finished my studies and my brain is still full of algorithms and data structures, so I felt confortable in dealing with this task.
 
 h2. Primary choices
 * Since we are about to implement a TreeSet, It obvious to take advantage of this data structure by making the set sorted.
 * I'm really interested in exploring assets and liabilities of immutable data structure, so my TreeSet will be backed by an immutable tree. Mutability will be obtained by replacing reference to it.
-* AVL Tree is the kind of balanced tree I'm the most familiar with, it will do the job. 
+* AVL Tree get my preference since it's an efficient and elegant kind of balanced and sorted tree.
 
 h2. Implementation
 
 h3. Pluging into the existing Scala collection hierarchy
 
-TreeSet collection nature is twofold :
-* First, it's a Set
-* Second, it's a SortedSet
+In Scala *Like traits holds implementation whereas their counterparts has a structural role.
 
-bc. class TreeSet[A](base: Option[TreeSet[A]] = None, from: Option[A] = None, until: Option[A] = None)
-                 (implicit val ordering: Ordering[A])
-  extends SortedSet[A]
-  with SetLike[A, TreeSet[A]]
-  with SortedSetLike[A, TreeSet[A]]
-  with Set[A] { ... }
+As said above we are implementing a Set that sorts elements it contains, so not only we have to mix-in from Set and SetLike but also from SortedSet and SortedSetLike.
+
+Here is the definition of TreeSet from a type point of view :
+bc. class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, TreeSet[A]]
+  with Set[A] with SetLike[A, TreeSet[A]]  { ... }
+
+Since TreeSet sorts his elements you need to provide him an object responsible for defining the order relation beetween all elements of type A. This why TreeSet primary constructors require an Ordering of A.
 
 h3. AVL Tree
 
+An AVL tree is both a binary and balanced tree. An avl is said balanced if for any node, the depth difference beetween left sub-tree and right sub-tree is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check dedicated "http://en.wikipedia.org/wiki/AVL_tree":Wikipedia page for more information.
+
 h3. Iterator
+
+As expected, iteration on the tree is obtained by an inorder traversal. This means we traverse the left-subtree first since it contains the smallest elements, then it's the turn of the node's value itself and finally we process the biggest elements by travesing the right-subtree.
 
 h3. Bounded view
 
+bc. /** Creates a ranged projection of this collection. Any mutations in the
+ *  ranged projection will update this collection and vice versa.  Note: keys
+ *  are not garuanteed to be consistent between this collection and the projection.
+ *  This is the case for buffers where indexing is relative to the projection.
+ *
+ *  @param from  The lower-bound (inclusive) of the ranged projection.
+ *               <code>None</code> if there is no lower bound.
+ *  @param until The upper-bound (exclusive) of the ranged projection.
+ *               <code>None</code> if there is no upper bound.
+ */
+def rangeImpl(from: Option[K], until: Option[K]): This
+
+rangeImpl is a mandatory method in order to conforms to SortedSet. Adopted solution to do this is to bound tree iteration itself instead of working on the undelying AVL tree. Indeed since in AVL all elements in left sub-tree are lower than node's element witch is itself lower to all elements in right sub-tree we can simply stop the left or right iteration when we detect we are off bounds. Here is the code :
+
+bc. /**
+ * Returns a bounded stream of elements in the tree
+ */
+def toStream[A](tree: AVLTree[A], isLeftAcceptable: A => Boolean, isRightAcceptable: A => Boolean): Stream[A] = tree match {
+  case Leaf => Stream.empty
+  case Node(a, left, right) => if (isLeftAcceptable(a)) {
+    if (isRightAcceptable(a))
+      toStream(left, isLeftAcceptable, isRightAcceptable) ++ Stream(a) ++ toStream(right, isLeftAcceptable, isRightAcceptable)
+    else
+      toStream(left, isLeftAcceptable, isRightAcceptable)
+  } else if (isRightAcceptable(a)) {
+    toStream(right, isLeftAcceptable, isRightAcceptable)
+  } else {
+    Stream.empty
+  }
+}
+
+bc. // View secondary constructor
+private def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(implicit ordering: Ordering[A]) {
+  this()
+  this.base = base
+  this.from = from
+  this.until = until
+}
+
+bc. override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] = new TreeSet(Some(this), from, until)
+
 h3. Size method optimisation
+
 
 h3. Clone method optimisation
 
