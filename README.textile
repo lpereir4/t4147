@@ -18,6 +18,7 @@ In Scala *Like traits holds implementation whereas their counterparts has a stru
 As said above we are implementing a Set that sorts elements it contains, so not only we have to mix-in from Set and SetLike but also from SortedSet and SortedSetLike.
 
 Here is the definition of TreeSet from a type point of view :
+
 bc. class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, TreeSet[A]]
   with Set[A] with SetLike[A, TreeSet[A]]  { ... }
 
