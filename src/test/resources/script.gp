@@ -1,8 +1,8 @@
 set terminal png size 1280, 640
-set output "output.png"
+set output "output3.png"
 set style data lines
 
-set title "Compared cost of insertion and removal"
+set title "Compared cost of X insertion and X removal"
 set xlabel "Cardinality"
 set ylabel "Time in ms"
 set size ratio 0.5
