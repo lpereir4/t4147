@@ -26,7 +26,7 @@ Since TreeSet sorts his elements you need to provide him an object responsible f
 
 h3. AVL Tree
 
-An AVL tree is both a binary and balanced tree. An avl is said balanced if for any node, the depth difference beetween left sub-tree and right sub-tree is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check dedicated "http://en.wikipedia.org/wiki/AVL_tree":Wikipedia page for more information.
+An AVL tree is both a binary and balanced tree. An avl is said balanced if for any node, the depth difference beetween left sub-tree and right sub-tree is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check dedicated "Wikipedia":http://en.wikipedia.org/wiki/AVL_tree page for more information.
 
 h3. Iterator
 
