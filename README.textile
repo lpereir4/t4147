@@ -87,7 +87,7 @@ clone is also a good candidate for optimisation. Base implementation creates an 
 
 h2. Performance quick benchmark
 
-!https://github.com/lpereir4/t4147/raw/master/src/test/resources/output.png!
+!https://github.com/lpereir4/t4147/raw/master/src/test/resources/output3.png!
 
 h2. Usefull documentation
 
