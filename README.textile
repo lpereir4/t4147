@@ -85,8 +85,6 @@ h3. Clone method optimisation
 
 clone is also a good candidate for optimisation. Base implementation creates an empty set and iterates over the inital one to add each element to the clone. So here again there is an O(n) complexity in time. To resolve this, we take advantage of the *immutable* nature of the underlying AVL tree. Thanks to the immutability of the avl, we can simply share it among the original set and his clone. Good point for immutable data structures! Complexity in times becomes constant.
 
-h2. Unit tests
-
 h2. Performance quick benchmark
 
 !https://github.com/lpereir4/t4147/raw/master/src/test/resources/output.png!
