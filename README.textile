@@ -1,4 +1,4 @@
-h1. t4147 : Yet another Set
+h1. t4147 : Empirical Scala
 
 As my interest for this language was growing, I realised that open source contribution would ease my comprehension of the language as well as constituing a valuable experience. I started to find an open source project I could contribute to and discovered that some issues of the Scala project itself where assigned to the community, let's go ...
 
