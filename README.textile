@@ -1,15 +1,15 @@
-h1. t4147 : Empirical Scala
+h1. t4147 : a not so mutable TreeSet integration
 
-As my interest for this language was growing, I realised that open source contribution would ease my comprehension of the language as well as constituing a valuable experience. I started to find an open source project I could contribute to and discovered that some issues of the Scala project itself where assigned to the community, let's go ...
+In Scala there are two family of collections: mutable and immutable ones. When you operate on a mutable collection, you change it in place. On the other hand, an immutable collection doesn't change, it returns a new collection with the update you asked for. Right now, Scala library provides an immutable TreeSet but not his mutable counterpart, let's do it ...
 
-In Scala, collections are you can choose to use immutable as well as mutable collections. Since Scala promotes a functionnal programming style, implementation of the immutable variation has been favored. This resulted in issue "#4147":https://issues.scala-lang.org/browse/SI-4147 to be opened, implementation of a mutable TreeSet would be usefull. I recently finished my studies and my brain is still full of algorithms and data structures, so I felt confortable in dealing with this task.
-
-h2. Primary choices
-* Since we are about to implement a TreeSet, It obvious to take advantage of this data structure by making the set sorted.
-* I'm really interested in exploring assets and liabilities of immutable data structure, so my TreeSet will be backed by an immutable tree. Mutability will be obtained by replacing reference to it.
-* AVL Tree get my preference since it's an efficient and elegant kind of balanced and sorted tree.
+h2. Essential choices
+* Since I intend to write a tree based set, it would be a shame to not implement a sorted set since it's the good thing about trees. 
+* I'm really interested in exploring assets and liabilities of immutable data structure. So although the API is exposing a mutable collection. The underlying tree will be immutable. Mutability will be obtained by just replacing reference to it.
+* AVL tree gets my preference since it's an efficient and elegant kind of balanced and sorted tree.
 
 h2. Implementation
+
+Implementation is highly driven by the Scala base trait you use. It will determine what operations need to be implemented. Nevertheless some operations need to be overridden in order to improve performance.
 
 h3. Pluging into the Scala collection hierarchy
 
