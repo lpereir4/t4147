@@ -11,9 +11,9 @@ h2. Primary choices
 
 h2. Implementation
 
-h3. Pluging into the existing Scala collection hierarchy
+h3. Pluging into the Scala collection hierarchy
 
-In Scala *Like traits holds implementation whereas their counterparts has a structural role.
+In Scala a trait suffixed by 'Like' holds implementation whereas his counterpart has a structural role.
 
 As said above we are implementing a Set that sorts elements it contains, so not only we have to mix-in from Set and SetLike but also from SortedSet and SortedSetLike.
 
@@ -22,11 +22,11 @@ Here is the definition of TreeSet from a type point of view :
 bc. class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, TreeSet[A]]
   with Set[A] with SetLike[A, TreeSet[A]]  { ... }
 
-Since TreeSet sorts his elements you need to provide him an object responsible for defining the order relation beetween all elements of type A. This why TreeSet primary constructors require an Ordering of A.
+Since TreeSet sorts his elements you need to provide him an object responsible for defining the order relation beetween all elements of type A. This why TreeSet primary constructors require an Ordering over A.
 
 h3. AVL Tree
 
-An AVL tree is both a binary and balanced tree. An avl is said balanced if for any node, the depth difference beetween left sub-tree and right sub-tree is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check dedicated "Wikipedia":http://en.wikipedia.org/wiki/AVL_tree page for more information.
+An AVL tree is both a binary and a balanced tree. An AVL is said balanced if for any node, the depth difference beetween left sub-tree and right sub-tree is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check dedicated "Wikipedia":http://en.wikipedia.org/wiki/AVL_tree page for more information.
 
 h3. Iterator
 
@@ -46,7 +46,7 @@ bc. /** Creates a ranged projection of this collection. Any mutations in the
  */
 def rangeImpl(from: Option[K], until: Option[K]): This
 
-rangeImpl is a mandatory method in order to conforms to SortedSet. Adopted solution to do this is to bound tree iteration itself instead of working on the undelying AVL tree. Indeed since in AVL all elements in left sub-tree are lower than node's element witch is itself lower to all elements in right sub-tree we can simply stop the left or right iteration when we detect we are off bounds. Here is the code :
+rangeImpl is a mandatory method in order to conforms to SortedSetLike trait. Adopted solution to do this is to bound tree iteration itself instead of working on the undelying AVL tree. Indeed since in AVL all elements in left sub-tree are lower than node's element witch is itself lower to all elements in right sub-tree we can simply stop the left or right iteration once we detect we are off bounds. Here is the code :
 
 bc. /**
  * Returns a bounded stream of elements in the tree
@@ -63,7 +63,7 @@ def toStream[A](tree: AVLTree[A], isLeftAcceptable: A => Boolean, isRightAccepta
   } else {
     Stream.empty
   }
-}
+} 
 
 bc. // View secondary constructor
 private def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(implicit ordering: Ordering[A]) {
@@ -75,10 +75,15 @@ private def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(im
 
 bc. override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] = new TreeSet(Some(this), from, until)
 
+So rangeImpl returns a proxy of the initial tree, every operation is in fact pocessed on original TreeSet. The only specific data is the tuple of bounds 'from' and 'until'.
+
 h3. Size method optimisation
 
+In order to improve performances, some base method overriding is required. This is the case for 'size', indeed, base implementation  consumes an iterator to compute the size. This makes this method inefficient since complexity in time is O(n). A basic solution is to store size and update the count when insertion or removal occurs. However this optimisation cannot apply when the object is a bounded projection and could be a point of improvement.
 
 h3. Clone method optimisation
+
+clone is also a good candidate for optimisation. Base implementation creates an empty set and iterates over the inital one to add each element to the clone. So here again there is an O(n) complexity in time. To resolve this, we take advantage of the *immutable* nature of the underlying AVL tree. Thanks to the immutability of the avl, we can simply share it among the original set and his clone. Good point for immutable data structures! Complexity in times becomes constant.
 
 h2. Unit tests
 
