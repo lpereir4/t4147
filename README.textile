@@ -11,24 +11,18 @@ h2. Preliminary choices
 
 h2. Implementation & integration
 
-// Rewrite it
-Implementation is highly driven by the Scala base trait you use. It will both determine what operations needs to be implemented and the propeties of your collection. 
-//
+Implementation is highly driven by the Scala base trait you use. It will both determine what operations needs to be implemented and the propeties of your collection.
 
 h3. Pluging into the Scala collection hierarchy
 
-// Rewrite it
-In Scala a trait suffixed by 'Like' holds implementation whereas his counterpart has a structural role.
-
 As said above we are implementing a Set that sorts elements it contains, so not only we have to mix-in from Set and SetLike but also from SortedSet and SortedSetLike.
 
-Here is the definition of TreeSet from a type point of view :
+Here is the definition of TreeSet from a type hierarchy point of view :
 
 bc. class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, TreeSet[A]]
   with Set[A] with SetLike[A, TreeSet[A]]  { ... }
 
-Since TreeSet sorts his elements you need to provide him an object responsible for defining the order relation beetween all elements of type A. This why TreeSet primary constructors require an Ordering over A.
-//
+Since TreeSet sorts his elements you need to provide him an object responsible for defining the order relation beetween all elements of type A. This why TreeSet primary constructor requires an Ordering for elements of type A.
 
 h3. AVL Tree
 
@@ -89,11 +83,13 @@ private def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(im
 bc. // TreeSet.scala
 override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] = new TreeSet(Some(this), from, until)
 
-So rangeImpl returns a proxy of the initial tree, every operation is in fact pocessed on original TreeSet. The only specific data is the tuple of bounds 'from' and 'until'.
+rangeImpl returns a projection of the initial tree, every operation is in fact pocessed on original TreeSet. The only specific data is the tuple of bounds 'from' and 'until'. This data is used to limit iteration on projection. So the desired effect is obtained.
 
 h3. Size method optimisation
 
-In order to improve performances, some base method overriding is required. This is the case for 'size', indeed, base implementation  consumes an iterator to compute the size. This makes this method inefficient since complexity in time is O(n). A basic solution is to store size and update the count when insertion or removal occurs. However this optimisation cannot apply when the object is a bounded projection and could be a point of improvement.
+In order to improve performances, some base method overriding is required. This is the case for 'size', indeed, base implementation  consumes an iterator to compute the size. This makes this method inefficient since complexity in time is O(n). A basic solution is to store size and update the count when insertion or removal occurs.
+
+However, this optimisation doesn't work well for projections. Indeed a projection doesn't have exclusive access to avl tree reference. This means that avl tree can change without projection even 'knowing' it. For this reasons, it can become tricky for a projection to maintain a valid cached size. At least, the size computation has to take bounds into account, I decided to give up on this point.
 
 h3. Clone method optimisation
 
