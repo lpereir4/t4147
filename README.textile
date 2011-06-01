@@ -100,8 +100,8 @@ h2. Conclusion
 
 mutable.TreeSet benefits of a large amount of methods whereas only about ten were implemented. And even not all of them were mandatory ones. This has been achieved by the factorization of every recurrent operation into a base trait. This property makes implementation of your own scala collection relatively easy. In that sense, I improved my understanding of what a scalable language can be.
 
-This implementation is an answer to ticket "https://issues.scala-lang.org/browse/SI-4147":t4147.
-Full source code can be accessed "https://github.com/lpereir4/t4147":here.
+This implementation is an answer to ticket "t4147":https://issues.scala-lang.org/browse/SI-4147.
+Full source code can be accessed "here":https://github.com/lpereir4/t4147.
 
 h2. Usefull documentation
 
