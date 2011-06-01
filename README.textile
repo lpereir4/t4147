@@ -1,18 +1,23 @@
-h1. t4147 : a not so mutable TreeSet integration
+h1. Implement your own collection in Scala
 
-In Scala there are two family of collections: mutable and immutable ones. When you operate on a mutable collection, you change it in place. On the other hand, an immutable collection doesn't change, it returns a new collection with the update you asked for. Right now, Scala library provides an immutable TreeSet but not his mutable counterpart, let's do it ...
+tags : scala, collection, tree, set, integration, extensibility, algorithmic, functional programming, mutable, avl
 
-h2. Essential choices
-* Since I intend to write a tree based set, it would be a shame to not implement a sorted set since it's the good thing about trees. 
-* I'm really interested in exploring assets and liabilities of immutable data structure. So although the API is exposing a mutable collection. The underlying tree will be immutable. Mutability will be obtained by just replacing reference to it.
+In Scala there are two family of collections: mutable and immutable ones. When you operate on a mutable collection, you change it in place, as a side effect. On the other hand, an immutable collection doesn't change, it returns a new collection with the update you asked for. Right now, Scala library provides an immutable TreeSet but not his mutable counterpart, let's see how to integrate our own ...
+
+h2. Preliminary choices
+* Since It's about a tree based set implementation, it would be a shame to not make it sorted. Indeed it's the good thing about tree data structure. 
+* I'm really interested in exploring assets and liabilities of immutable data structure. So although the API is exposing a mutable collection, the underlying tree will be immutable. Mutability will be obtained by simply changing referenced immutable tree.
 * AVL tree gets my preference since it's an efficient and elegant kind of balanced and sorted tree.
 
-h2. Implementation
+h2. Implementation & integration
 
-Implementation is highly driven by the Scala base trait you use. It will determine what operations need to be implemented. Nevertheless some operations need to be overridden in order to improve performance.
+// Rewrite it
+Implementation is highly driven by the Scala base trait you use. It will both determine what operations needs to be implemented and the propeties of your collection. 
+//
 
 h3. Pluging into the Scala collection hierarchy
 
+// Rewrite it
 In Scala a trait suffixed by 'Like' holds implementation whereas his counterpart has a structural role.
 
 As said above we are implementing a Set that sorts elements it contains, so not only we have to mix-in from Set and SetLike but also from SortedSet and SortedSetLike.
@@ -23,10 +28,12 @@ bc. class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] wi
   with Set[A] with SetLike[A, TreeSet[A]]  { ... }
 
 Since TreeSet sorts his elements you need to provide him an object responsible for defining the order relation beetween all elements of type A. This why TreeSet primary constructors require an Ordering over A.
+//
 
 h3. AVL Tree
 
 An AVL tree is both a binary and a balanced tree. An AVL is said balanced if for any node, the depth difference beetween left sub-tree and right sub-tree is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check dedicated "Wikipedia":http://en.wikipedia.org/wiki/AVL_tree page for more information.
+This data structure is implemented in file AVLTree.scala. It defines basic operations, such as insertion, removal and iteration. During implementation, I took care of writting recursive method in tail call fashion in order to let the compiler apply tail call optimisation. This optimization allows to recursively call a function without exceeding the size of the execution stack.
 
 h3. Iterator
 
@@ -88,6 +95,13 @@ clone is also a good candidate for optimisation. Base implementation creates an 
 h2. Performance quick benchmark
 
 !https://github.com/lpereir4/t4147/raw/master/src/test/resources/output3.png!
+
+h2. Conclusion
+
+mutable.TreeSet benefits of a large amount of methods whereas only about ten were implemented. And even not all of them were mandatory ones. This has been achieved by the factorization of every recurrent operation into a base trait. This property makes implementation of your own scala collection relatively easy. In that sense, I improved my understanding of what a scalable language can be.
+
+This implementation is an answer to ticket "https://issues.scala-lang.org/browse/SI-4147":t4147.
+Full source code can be accessed "https://github.com/lpereir4/t4147":here.
 
 h2. Usefull documentation
 
