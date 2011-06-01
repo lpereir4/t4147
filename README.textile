@@ -103,11 +103,11 @@ h2. Performance quick benchmark
 
 !https://github.com/lpereir4/t4147/raw/master/src/test/resources/output3.png!
 
-These curves give an indication of the observed time consumed in order to fill up and then empty for various collections implementation.
+These curves give an indication of the observed time consumption in order to fill up and empty collections.
 
 h2. Conclusion
 
-mutable.TreeSet benefits of a large amount of methods whereas only about ten were implemented. And even not all of them were mandatory ones. This has been achieved by the factorization of every recurrent operation into a base trait. This property makes implementation of your own scala collection relatively easy. In that sense, I improved my understanding of what a scalable language can be.
+mutable.TreeSet benefits of a large amount of methods whereas only about ten were implemented. And even not all of them were mandatory ones. This has been achieved by the factorization of every recurrent operation into a base trait. This property makes implementation of your own scala collection relatively fast and easy. In that sense, this experience made me understand better what a scalable language can be.
 
 This implementation is an answer to ticket "t4147":https://issues.scala-lang.org/browse/SI-4147.
 Full source code can be accessed "here":https://github.com/lpereir4/t4147.
