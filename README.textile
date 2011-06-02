@@ -97,7 +97,7 @@ clone is also a good candidate for optimisation. Base implementation creates an 
 
 h2. Performance quick benchmark
 
-!https://github.com/lpereir4/t4147/raw/master/src/test/resources/output3.png!
+!https://github.com/lpereir4/t4147/raw/master/src/test/resources/linear/linear.regular.1M.png!
 
 These curves give an indication of the observed time consumption in order to fill up and empty collections.
 
