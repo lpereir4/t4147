@@ -1,4 +1,4 @@
-h1. Implement your own collection in Scala
+h1. Implement your own Scala collection
 
 tags : scala, collection, tree, set, integration, extensibility, algorithmic, functional programming, mutable, avl
 
