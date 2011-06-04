@@ -88,9 +88,9 @@ object Benchmark {
     ("REMOVAL : "+data._1, (for (j <- 1 to n) yield (j * step)).map((a: Int) => {
       val seq = data._2.take(a)
       (seq.size,
-        measure(insertionJob)(seq)(immutableSetBuilder(seq)),
-        measure(insertionJob)(seq)(mutableSetBuilder(seq)),
-        javaMeasure(javaInsertionJob)(seq)(javaMutableSetBuilder(seq)))
+        measure(removalJob)(seq)(immutableSetBuilder(seq)),
+        measure(removalJob)(seq)(mutableSetBuilder(seq)),
+        javaMeasure(javaRemovalJob)(seq)(javaMutableSetBuilder(seq)))
     }).toList)
   }
 
