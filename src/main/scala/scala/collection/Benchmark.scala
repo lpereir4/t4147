@@ -1,8 +1,8 @@
 package scala.collection
 
 object Benchmark {
-  type Job[A] = Seq[Int] => Set[A] => Unit
-  type JavaJob[A] = Seq[Int] => java.util.TreeSet[A] => Unit
+  type Job[A] = Seq[A] => Set[A] => Unit
+  type JavaJob[A] = Seq[A] => java.util.TreeSet[A] => Unit
   type Builder[A] = Seq[A] => Set[A]
   type JavaBuilder[A] = Seq[A] => java.util.TreeSet[A]
 
@@ -18,8 +18,10 @@ object Benchmark {
     a
   }
 
+  type A = Int
+
   // chronometers
-  def measure[A]: Job[A] => Seq[Int] => Set[A] => Long = (job: Job[A]) => { (seq: Seq[Int]) =>
+  def measure[A]: Job[A] => Seq[A] => Set[A] => Long = (job: Job[A]) => { (seq: Seq[A]) =>
     { (s: Set[A]) =>
       {
         val start = System.nanoTime()
@@ -29,7 +31,7 @@ object Benchmark {
     }
   }
 
-  def javaMeasure[A]: JavaJob[A] => Seq[Int] => java.util.TreeSet[A] => Long = (job: JavaJob[A]) => { (seq: Seq[Int]) =>
+  def javaMeasure[A]: JavaJob[A] => Seq[A] => java.util.TreeSet[A] => Long = (job: JavaJob[A]) => { (seq: Seq[A]) =>
     { (s: java.util.TreeSet[A]) =>
       {
         val start = System.nanoTime()
@@ -39,7 +41,7 @@ object Benchmark {
     }
   }
 
-  val javaInsertionJob: JavaJob[Int] = (seq: Seq[Int]) => { (s: java.util.TreeSet[Int]) =>
+  val javaInsertionJob: JavaJob[A] = (seq: Seq[A]) => { (s: java.util.TreeSet[A]) =>
     {
       var d = s
       for (i <- seq) {
@@ -48,7 +50,7 @@ object Benchmark {
     }
   }
 
-  val javaRemovalJob: JavaJob[Int] = (seq: Seq[Int]) => { (s: java.util.TreeSet[Int]) =>
+  val javaRemovalJob: JavaJob[A] = (seq: Seq[A]) => { (s: java.util.TreeSet[A]) =>
     {
       var d = s
       for (i <- seq) {
@@ -57,7 +59,7 @@ object Benchmark {
     }
   }
 
-  val insertionJob: Job[Int] = (seq: Seq[Int]) => { (s: Set[Int]) =>
+  val insertionJob: Job[A] = (seq: Seq[A]) => { (s: Set[A]) =>
     {
       var d = s
       for (i <- seq) {
@@ -66,13 +68,22 @@ object Benchmark {
     }
   }
 
-  val removalJob: Job[Int] = (seq: Seq[Int]) => { (s: Set[Int]) =>
+  val removalJob: Job[A] = (seq: Seq[A]) => { (s: Set[A]) =>
     {
       var d = s
       for (i <- seq) {
         d -= i
       }
     }
+  }
+
+  def randomData(size: Int): (String, Seq[Int]) = {
+    var a: List[Int] = (1 to size).toList.map(_ => (math.random*Integer.MAX_VALUE).toInt)
+    a = a.distinct
+    while(a.size != size) {
+      a = ((math.random*Integer.MAX_VALUE).toInt::a).distinct
+    }
+    ("randomData",a)
   }
 
   def regularData(size: Int): (String, Seq[Int]) = ("regularData", (1 to size))
@@ -113,8 +124,8 @@ object Benchmark {
 
   def main(args: Array[String]) {
     val step = 10000
-    show(genericInsertion(args(0).toInt, step , regularData))
+    show(genericInsertion(args(0).toInt, step , randomData))
     println("---------------")
-    show(genericRemoval(args(0).toInt, step , regularData))
+    show(genericRemoval(args(0).toInt, step , randomData))
   }
 }
