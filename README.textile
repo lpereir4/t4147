@@ -2,32 +2,32 @@ h1. Implement your own Scala collection
 
 tags : scala, collection, tree, set, integration, extensibility, algorithmic, functional programming, mutable, avl
 
-In Scala there are two family of collections: mutable and immutable ones. When you operate on a mutable collection, you change it in place, as a side effect. On the other hand, an immutable collection doesn't change, it returns a new collection with the update you asked for. Right now, Scala library provides an immutable TreeSet but not his mutable counterpart, let's see how to integrate our own ...
+In Scala there are two families of collections: mutable and immutable ones. When you operate on a mutable collection, you change it in place, as a side effect. On the other hand, an immutable collection doesn't change but rather returns a new collection with the update you performed. Right now, the Scala library provides an immutable TreeSet but not its mutable counterpart. Let's see how to integrate our own ...
 
 h2. Preliminary choices
-* Since It's about a tree based set implementation, it would be a shame to not make it sorted. Indeed it's the good thing about tree data structure. 
-* I'm really interested in exploring assets and liabilities of immutable data structure. So although the API is exposing a mutable collection, the underlying tree will be immutable. Mutability will be obtained by simply changing referenced immutable tree.
-* AVL tree gets my preference since it's an efficient and elegant kind of balanced and sorted tree.
+* Since it's a tree based set implementation, it would be a shame not to make it sorted.
+* I'm really interested in exploring assets and liabilities of immutable data structures. So although the API is exposing a mutable collection, the underlying tree will be immutable. Mutability will be obtained by simply changing the referenced immutable tree.
+* AVL tree gets my preference since it's an efficient and elegant kind of balanced and sorted trees.
 
 h2. Implementation & integration
-
+//FIXME: elaborate :p
 Implementation is highly driven by the Scala base trait you use. It will both determine what operations needs to be implemented and the propeties of your collection.
 
 h3. Pluging into the Scala collection hierarchy
 
-As said above we are implementing a Set that sorts elements it contains, so not only we have to mix-in from Set and SetLike but also from SortedSet and SortedSetLike.
+As said above we are implementing a Set that keeps its elements sorted, so not only we have to mix-in from Set and SetLike but also from SortedSet and SortedSetLike.
 
 Here is the definition of TreeSet from a type hierarchy point of view :
 
 bc. class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with SortedSetLike[A, TreeSet[A]]
   with Set[A] with SetLike[A, TreeSet[A]]  { ... }
 
-Since TreeSet sorts his elements you need to provide him an object responsible for defining the order relation beetween all elements of type A. This why TreeSet primary constructor requires an Ordering for elements of type A.
+Since TreeSet sorts its elements, you need to provide it with a means of defining the order relation beetween all its elements (of type A). This is why TreeSet's primary constructor requires an Ordering for the elements of type A.
 
 h3. AVL Tree
 
-An AVL tree is both a binary and a balanced tree. An AVL is said balanced if for any node, the depth difference beetween left sub-tree and right sub-tree is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check dedicated "Wikipedia":http://en.wikipedia.org/wiki/AVL_tree page for more information.
-This data structure is implemented in file AVLTree.scala. It defines basic operations, such as insertion, removal and iteration. During implementation, I took care of writting recursive method in tail call fashion in order to let the compiler apply tail call optimisation. This optimization allows to recursively call a function without exceeding the size of the execution stack.
+An AVL tree is both a binary and a balanced tree. An AVL is said balanced if for any of its nodes, the depth difference beetween its left and right sub-trees is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check the dedicated "Wikipedia":http://en.wikipedia.org/wiki/AVL_tree page for more information.
+This data structure is implemented in the file AVLTree.scala. It defines basic operations, such as insertion, removal and iteration. In the implementation, a special care was taken when writing the recursive methods in order to ensure that the compiler applies tail call optimisation. This optimization allows recursion without exceeding the stack limit.
 
 h3. Iterator
 
@@ -47,7 +47,7 @@ bc. /** Creates a ranged projection of this collection. Any mutations in the
  */
 def rangeImpl(from: Option[K], until: Option[K]): This
 
-rangeImpl is a mandatory method in order to conforms to SortedSetLike trait. Adopted solution to do this is to bound tree iteration itself instead of working on the undelying AVL tree. Indeed since in AVL all elements in left sub-tree are lower than node's element witch is itself lower to all elements in right sub-tree we can simply stop the left or right iteration once we detect we are off bounds. Here is the code :
+rangeImpl is a mandatory method in order to conforms to the SortedSetLike trait. The adopted solution to do this is to bound tree iteration itself instead of working on the undelying AVL tree. Indeed since in an AVL all elements in the left sub-tree are smaller than the node's element, witch is itself smaller than all the elements in its right sub-tree, we can simply stop the left or right iteration once we detect we are off bounds. Here is the code :
 
 bc. // AVLTree.scala
 /**
@@ -83,19 +83,19 @@ private def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(im
 bc. // TreeSet.scala
 override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] = new TreeSet(Some(this), from, until)
 
-rangeImpl returns a projection of the initial tree, every operation is in fact pocessed on original TreeSet. The only specific data is the tuple of bounds 'from' and 'until'. This data is used to limit iteration on projection. So the desired effect is obtained.
+rangeImpl returns a projection of the initial tree, every operation is in fact applied to the original TreeSet. The only specific data is the tuple of bounds 'from' and 'until'. This data is used to limit iteration on projection. So the desired effect is obtained.
 
 h3. Size method optimisation
 
-In order to improve performances, some base method overriding is required. This is the case for 'size', indeed, base implementation  consumes an iterator to compute the size. This makes this method inefficient since complexity in time is O(n). A basic solution is to store size and update the count when insertion or removal occurs.
+In order to improve performances, some base methods have to be overriden. This is the case for 'size' for example, where the base implementation  consumes an iterator to compute its size. This makes this method inefficient since its complexity in time is O(n). A basic solution is to store size and keep it updated upon insertions and removals.
 
-However, this optimisation doesn't work well for projections. Indeed a projection doesn't have exclusive access to avl tree reference. This means that avl tree can change without projection even 'knowing' it. For this reasons, it can become tricky for a projection to maintain a valid cached size. At least, the size computation has to take bounds into account, I decided to give up on this point.
+However, this optimisation doesn't work well for projections. Indeed a projection doesn't have exclusive access to the avl tree reference. This means that avl tree can change without the projection even 'knowing' it. For this reasons, it can become tricky for a projection to maintain a valid cached size. At least, the size computation has to take bounds into account, I decided to give up on this point.
 
 h3. Clone method optimisation
 
-clone is also a good candidate for optimisation. Base implementation creates an empty set and iterates over the inital one to add each element to the clone. So here again there is an O(n) complexity in time. To resolve this, we take advantage of the *immutable* nature of the underlying AVL tree. Thanks to the immutability of the avl, we can simply share it among the original set and his clone. Good point for immutable data structures! Complexity in times becomes constant.
+clone is also a good candidate for optimisation. The base implementation creates an empty set and iterates over the inital one to add its elements to the clone. So here again there is an O(n) complexity in time. To resolve this, we take advantage of the *immutable* nature of the underlying AVL tree. Thanks to the immutability of the avl, we can simply share it among the original set and his clone. Good point for immutable data structures! Complexity in times becomes constant.
 
-h2. Performance quick benchmark
+h2. Quick performance benchmark
 
 !https://github.com/lpereir4/t4147/raw/master/src/test/resources/insertion/alternate/2/insertion.alternate.png!!https://github.com/lpereir4/t4147/raw/master/src/test/resources/removal/alternate/2/removal.alternate.png!
 
@@ -103,12 +103,12 @@ These curves give an indication of the observed time consumption in order to fil
 
 h2. Conclusion
 
-mutable.TreeSet benefits of a large amount of methods whereas only about ten were implemented. And even not all of them were mandatory ones. This has been achieved by the factorization of every recurrent operation into a base trait. This property makes implementation of your own scala collection relatively fast and easy. In that sense, this experience made me understand better what a scalable language can be.
+While mutable.TreeSet exposes a large number of methods, only about ten of them had to be implemented. And not all of them were mandatory. This has been achieved by the factorization of every recurrent operation into a base trait in the Scala library. This property makes implementing your own scala collection relatively fast and easy. In that sense, this experience helped me better understand why Scala's name origin, i.e. ScAlable LAnguage .
 
-This implementation is an answer to ticket "t4147":https://issues.scala-lang.org/browse/SI-4147.
-Full source code can be accessed "here":https://github.com/lpereir4/t4147.
+This implementation is an answer to this ticket "t4147":https://issues.scala-lang.org/browse/SI-4147.
+The full source code can be accessed "here":https://github.com/lpereir4/t4147.
 
-h2. Usefull documentation
+h2. Useful literature
 
 * "http://www.scala-lang.org/docu/files/collections-api/collections.html":http://www.scala-lang.org/docu/files/collections-api/collections.html
 * "http://www.scala-lang.org/docu/files/collections-api/collections-impl.html":http://www.scala-lang.org/docu/files/collections-api/collections-impl.html
