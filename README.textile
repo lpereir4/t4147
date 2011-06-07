@@ -57,7 +57,8 @@ bc. /** Creates a ranged projection of this collection. Any mutations in the
  */
 def rangeImpl(from: Option[K], until: Option[K]): This
 
-rangeImpl is a mandatory method in order to conforms to the SortedSetLike trait. The adopted solution to do this is to bound tree iteration itself instead of working on the undelying AVL tree. Indeed since in an AVL all elements in the left sub-tree are smaller than the node's element, witch is itself smaller than all the elements in its right sub-tree, we can simply stop the left or right iteration once we detect we are off bounds. Here is the code :
+rangeImpl is a mandatory method in order to conforms to the SortedSetLike trait. 
+The simplest way I found to do this is to modify 'iterator' behavior of the projection. Indeed since in an AVL all elements in the left sub-tree are smaller than the node's element, witch is itself smaller than all the elements in its right sub-tree, we can simply stop the left or right iteration once we detect we are off bounds. Here is the code :
 
 bc. // AVLTree.scala
 /**
@@ -93,7 +94,7 @@ private def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(im
 bc. // TreeSet.scala
 override def rangeImpl(from: Option[A], until: Option[A]): TreeSet[A] = new TreeSet(Some(this), from, until)
 
-rangeImpl returns a projection of the initial tree, every operation is in fact applied to the original TreeSet. The only specific data is the tuple of bounds 'from' and 'until'. This data is used to limit iteration on projection. So the desired effect is obtained.
+rangeImpl returns a projection of the initial tree, as a proxy, every operation is in fact applied to the original TreeSet. Doing so we ensure that 'Any mutations in the ranged projection will update this collection and vice versa'. The only specific data is the tuple of bounds 'from' and 'until'. This data is used to limit iteration on projection. So the desired effect is obtained.
 
 h3. Size method optimisation
 
