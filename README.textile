@@ -99,7 +99,7 @@ h3. Size method optimisation
 
 In order to improve performances, some base methods have to be overriden. This is the case for 'size' for example, where the base implementation  consumes an iterator to compute its size. This makes this method inefficient since its complexity in time is O(n). A basic solution is to store size and keep it updated upon insertions and removals.
 
-However, this optimisation doesn't work well for projections. Indeed a projection doesn't have exclusive access to the avl tree reference. This means that avl tree can change without the projection even 'knowing' it. For this reasons, it can become tricky for a projection to maintain a valid cached size. At least, the size computation has to take bounds into account, I decided to give up on this point.
+However, this optimisation doesn't work well for projections. Indeed a projection doesn't have exclusive access to the avl tree reference. This means that avl tree can change without the projection even 'knowing' it. Moreover, the size computation has to take bounds into account. For this reasons, it can become tricky for a projection to maintain a valid cached size. I decided to give up concerning size optimisation for projections.
 
 h3. Clone method optimisation
 
