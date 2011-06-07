@@ -26,6 +26,14 @@ bc. class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] wi
 
 Since TreeSet sorts its elements, you need to provide it with a means of defining the order relation beetween all its elements (of type A). This is why TreeSet's primary constructor requires an Ordering for the elements of type A.
 
+Extending this hierarchy only requires implementation of a few methods :
+* empty: TreeSet[A]
+* rangeImpl(from: Option[A], until: Option[A]): TreeSet[A]
+* -=(elem: A): TreeSet[A]
+* +=(elem: A): TreeSet[A]
+* contains(elem: A): Boolean
+* iterator: Iterator[A]
+
 h3. AVL Tree
 
 An AVL tree is both a binary and a balanced tree. An AVL is said balanced if for any of its nodes, the depth difference beetween its left and right sub-trees is stricty beetween -2 and 2. It allows insertion, removal and presence test in logarithmic time. Please check the dedicated "Wikipedia":http://en.wikipedia.org/wiki/AVL_tree page for more information.
