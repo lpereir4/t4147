@@ -99,7 +99,7 @@ clone is also a good candidate for optimisation. The base implementation creates
 
 h2. Quick performance benchmark
 
-!https://github.com/lpereir4/t4147/raw/master/src/test/resources/insertion/alternate/2/insertion.alternate.png!!https://github.com/lpereir4/t4147/raw/master/src/test/resources/removal/alternate/2/removal.alternate.png!
+!https://github.com/lpereir4/t4147/raw/master/src/test/resources/insertion/random/1/insertion.alternate.png!!https://github.com/lpereir4/t4147/raw/master/src/test/resources/removal/random/1/removal.alternate.png!
 
 These curves give an indication of the observed time consumption in order to fill up and empty collections.
 
