@@ -10,8 +10,10 @@ h2. Preliminary choices
 * AVL tree gets my preference since it's an efficient and elegant kind of balanced and sorted trees.
 
 h2. Implementation & integration
-//FIXME: elaborate :p
-Implementation is highly driven by the Scala base trait you use. It will both determine what operations needs to be implemented and the propeties of your collection.
+
+The first step in order to integrate the collection is to extend the right base trait(s). This choice is important, since it  determines the interface exposed by the collections as well as the methods to implement.
+
+In order to allow reusability of methods shared by distinct collections, the Scala collection convention is factor them in traits suffixed by 'Like'. TraversableLike for example provides implementation of many methods based on the 'foreach' base method. This method must be implemented by the concrete class mixing-in this trait.
 
 h3. Pluging into the Scala collection hierarchy
 
