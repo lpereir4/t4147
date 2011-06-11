@@ -1,66 +1,31 @@
-import org.scalacheck.Prop.forAll
-import org.scalacheck.Properties
-import org.scalacheck.ConsoleReporter.testStatsEx
-import org.scalacheck.Gen
-import org.scalacheck.{ Test => STest }
-import org.scalacheck.ConsoleReporter
+package scala.collection
 
-import collection.mutable.TreeSet
+object Main {
 
-object MutableTreeSetSpecification extends Properties("Mutable TreeSet") {
-
-  val generator = Gen.listOfN(1000, Gen.chooseNum(0, 1000))
-
-  val denseGenerator = Gen.listOfN(1000, Gen.chooseNum(0, 200))
-
-  property("Insertion doesn't allow duplicates values.") = forAll(generator) { (s: List[Int]) =>
-    {
-      val t = TreeSet[Int](s: _*)
-      t == s.toSet
-    }
+  def main(args: Array[String]) {
+    checkElementsAreSorted()
+    checkRangedImpl()
   }
 
-  property("Verification of size method validity") = forAll(generator) { (s: List[Int]) =>
-    {
-      val t = TreeSet[Int](s: _*)
-      for (a <- s) {
-        t -= a
-      }
-      t.size == 0
-    }
+  def checkElementsAreSorted() {
+    val tree = mutable.SortedSet[Int]()
+    tree ++= List(4, 3, 1, 6, 7, 5, 2)
+    assert(tree == immutable.SortedSet(1, 2, 3, 4, 5, 6, 7))
+    assert(tree.size == 7)
   }
 
-  property("All inserted elements are removed") = forAll(generator) { (s: List[Int]) =>
-    {
-      val t = TreeSet[Int](s: _*)
-      for (a <- s) {
-        t -= a
-      }
-      t == Set()
-    }
+  def checkRangedImpl() {
+    val tree = mutable.SortedSet[Int](3, 1, 6, 7, 5, 2)
+    val projection = tree.rangeImpl(Some(3), Some(6))
+    assert(projection == immutable.SortedSet(3, 5))
+    assert(projection.size == 2)
+
+    // Let's check that modification are taken into account
+    tree add 4
+    assert(tree == immutable.SortedSet(1, 2, 3, 4, 5, 6, 7))
+    assert(projection == immutable.SortedSet(3, 4, 5))
+    assert(tree.size == 7)
+    assert(projection.size == 3)
   }
 
-  property("Elements are sorted.") = forAll(generator) { (s: List[Int]) =>
-    {
-      val t = TreeSet[Int](s: _*)
-      t.toList == s.distinct.sorted
-    }
-  }
-
-  property("Implicit CanBuildFrom resolution succeeds as well as the \"same-result-type\" principle.") =
-    forAll(generator) { (s: List[Int]) =>
-      {
-        val t = TreeSet[Int](s: _*)
-        val t2 = t.map(_ * 2)
-        t2.isInstanceOf[collection.mutable.TreeSet[Int]]
-      }
-    }
-
-  property("A view doesn't expose off bounds elements") = forAll(denseGenerator) { (s: List[Int]) =>
-    {
-      val t = TreeSet[Int](s: _*)
-      val view = t.rangeImpl(Some(50), Some(150))
-      view.filter(_<50) == Set[Int]() && view.filter(_>=150) == Set[Int]()
-    }
-  }
 }
