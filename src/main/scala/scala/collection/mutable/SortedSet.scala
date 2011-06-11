@@ -14,27 +14,36 @@ import generic._
 /**
  * Base trait for mutable sorted set.
  * 
- *  @author Lucien Pereira
- *  @define Coll mutable.SortedSet
- *  @define coll mutable sorted set
+ * @define Coll mutable.SortedSet
+ * @define coll mutable sorted set
+ *
+ * @author Lucien Pereira
  * 
  */
-trait SortedSet[A] extends collection.SortedSet[A] with collection.SortedSetLike[A,SortedSet[A]] with mutable.Set[A] with mutable.SetLike[A, SortedSet[A]] {
+trait SortedSet[A] extends collection.SortedSet[A] with collection.SortedSetLike[A,SortedSet[A]]
+  with mutable.Set[A] with mutable.SetLike[A, SortedSet[A]] {
+
   /** Needs to be overridden in subclasses. */
   override def empty: SortedSet[A] = SortedSet.empty[A]
+
 }
 
-/** A template for mutable sorted set companion objects.
+/**
+ * A template for mutable sorted set companion objects.
+ *
+ * @define Coll mutable.SortedSet
+ * @define coll mutable sorted set
+ * @define factoryInfo
+ *   This object provides a set of operations needed to create sorted sets of type mutable.SortedSet.
+ * @define sortedSetCanBuildFromInfo
+ *   Standard `CanBuildFrom` instance for sorted sets.
+ *
+ * @author Lucien Pereira
  * 
- *  @define Coll mutable.SortedSet
- *  @define coll mutable sorted set
- *  @define factoryInfo
- *    This object provides a set of operations needed to create sorted sets of type mutable.SortedSet.
- *    @author Lucien Pereira
- *  @define sortedSetCanBuildFromInfo
- *    Standard `CanBuildFrom` instance for sorted sets.
  */
 object SortedSet extends MutableSortedSetFactory[SortedSet] {
   implicit def canBuildFrom[A](implicit ord: Ordering[A]): CanBuildFrom[Coll, A, SortedSet[A]] = new SortedSetCanBuildFrom[A]
+
   def empty[A](implicit ord: Ordering[A]): SortedSet[A] = TreeSet.empty[A]
+
 }

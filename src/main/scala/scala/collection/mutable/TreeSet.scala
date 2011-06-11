@@ -12,27 +12,32 @@ package mutable
 import generic._
 
 /** 
- *  @define Coll mutable.TreeSet
- *  @define coll mutable tree set
- *  @factoryInfo
- *    Companion object of TreeSet providing factory related utilities.
- *    @author Lucien Pereira
+ * @define Coll mutable.TreeSet
+ * @define coll mutable tree set
+ * @factoryInfo
+ *   Companion object of TreeSet providing factory related utilities.
+ * 
+ * @author Lucien Pereira
+ * 
  */
 object TreeSet extends MutableSortedSetFactory[TreeSet] {
-  /** The empty set of this type
+  /**
+   *  The empty set of this type
    */
   def empty[A](implicit ordering: Ordering[A]) = new TreeSet[A]()
+
 }
 
 /**
  * A mutable SortedSet using an immutable AVL Tree as underlying data structure.
- * 
+ *
  * @author Lucien Pereira
+ * 
  */
 class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with SetLike[A, TreeSet[A]]
   with SortedSetLike[A, TreeSet[A]] with Set[A] {
 
-  // View secondary constructor
+  // Projection constructor
   private def this(base: Option[TreeSet[A]], from: Option[A], until: Option[A])(implicit ordering: Ordering[A]) {
     this();
     this.base = base
@@ -50,7 +55,7 @@ class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with S
 
   private var cardinality: Int = 0
 
-  def resolve(): TreeSet[A] = base.getOrElse(this)
+  def resolve: TreeSet[A] = base.getOrElse(this)
 
   private def isLeftAcceptable(from: Option[A], ordering: Ordering[A])(a: A): Boolean =
     from.map(x => ordering.gteq(a, x)).getOrElse(true)
@@ -62,6 +67,7 @@ class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with S
    * Cardinality store the set size, unfortunately a
    * set view (given by rangeImpl)
    * cannot take advantage of this optimisation
+   * 
    */
   override def size: Int = base.map(_ => super.size).getOrElse(cardinality)
 
@@ -97,6 +103,7 @@ class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with S
    * Thanks to the nature immutable of the
    * underlying AVL Tree, we can share it with
    * the clone. So clone complexity in time is O(1).
+   * 
    */
   override def clone: TreeSet[A] = {
     val clone = new TreeSet[A](base, from, until)
@@ -111,6 +118,9 @@ class TreeSet[A](implicit val ordering: Ordering[A]) extends SortedSet[A] with S
     AVLTree.contains(elem, resolve.avl, ordering)
   }
 
-  override def iterator: Iterator[A] = AVLTree.iterator(resolve.avl, isLeftAcceptable(from, ordering), isRightAcceptable(until, ordering))
+  override def iterator: Iterator[A] =
+    AVLTree.iterator(resolve.avl,
+		     isLeftAcceptable(from, ordering),
+		     isRightAcceptable(until, ordering))
 
 }

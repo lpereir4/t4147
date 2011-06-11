@@ -11,11 +11,11 @@ package generic
 
 import scala.collection.mutable.{ Builder, GrowingBuilder }
 
-/**
- *  
- *  @define Coll mutable.SortedSet
- *  @define coll mutable sorted 
- *  @author Lucien Pereira
+/** 
+ * @define Coll mutable.SortedSet
+ * @define coll mutable sorted
+ *
+ * @author Lucien Pereira
  * 
  */
 abstract class MutableSortedSetFactory[CC[A] <: mutable.SortedSet[A] with SortedSetLike[A, CC[A]] with mutable.Set[A] with mutable.SetLike[A, CC[A]]] extends SortedSetFactory[CC] {
@@ -23,9 +23,10 @@ abstract class MutableSortedSetFactory[CC[A] <: mutable.SortedSet[A] with Sorted
   /**
    * mutable.SetBuilder uses '+' which is not a primitive for anything extending mutable.SetLike,
    * this causes serious perfomances issues since each time 'elems = elems + x'
-   * is evaluated elems is cloned (which is O(n)
+   * is evaluated elems is cloned (which is O(n)).
    *
-   * Fortunately GrowingBuilder comes to rescue
+   * Fortunately GrowingBuilder comes to rescue.
+   * 
    */
   override def newBuilder[A](implicit ord: Ordering[A]): Builder[A, CC[A]] = new GrowingBuilder[A, CC[A]](empty)
 
